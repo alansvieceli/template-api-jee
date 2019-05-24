@@ -1,40 +1,40 @@
 package br.com.alan;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.util.HashSet;
+import java.util.Set;
 
-@Path("/MyRestService")
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
+
 @ApplicationPath("/resource")
-public class RestService extends Application{
-	
-	//http://localhost:8080/teste-api/resource/MyRestService/sayHello
-	@GET
-	@Path("/sayHello")
-	public String getHelloMsg() {
-		return "Funcionou Caralho";
+public class RestService extends Application {
+
+	public RestService() {
+		BeanConfig conf = new BeanConfig();
+		conf.setTitle("Payfast API");
+		conf.setDescription("Pagamentos rápidos");
+		conf.setVersion("1.0.0");
+		conf.setHost("localhost:8080");
+		conf.setBasePath("/teste-api-0.0.1-SNAPSHOTt/resource");
+		conf.setSchemes(new String[] { "http" });
+		conf.setResourcePackage("br.com.alan");
+		conf.setScan(true);
 	}
-	
-	//http://localhost:8080/teste-api/resource/MyRestService/echo?msg=Teste
-	@GET
-	@Path("/echo")
-	public Response getEchoMsg(@QueryParam("msg") String msg) {
-		return Response.ok("Retorno com 200 (" + msg +")").build();
-	}
-	
-	//http://localhost:8080/teste-api/resource/MyRestService/object
-	@GET
-	@Path("/object")
-	//@Produces(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_JSON)
-	public SimpleObject getObject() {
-		return new SimpleObject(1, "Teste");
-		
+
+	@Override
+	public Set<Class<?>> getClasses() {
+		Set<Class<?>> resources = new HashSet<>();
+		// resources.add(JacksonJavaTimeConfiguration.class);
+		resources.add(TesteResource.class);
+
+		// classes do swagger...
+		resources.add(ApiListingResource.class);
+		resources.add(SwaggerSerializers.class);
+		return resources;
 	}
 
 }
